@@ -7,9 +7,10 @@
 
 using namespace calc;
 
-int main() {
-#if 0
-  std::stringstream SS("1");
+int main(int argc, char **argv) {
+#if 1
+  if (argc != 2) return -1;
+  std::stringstream SS(argv[1]);
   IOSLexer L(SS);
 #elif 0
   VectorLexer L({Token(Token::Number, "1"), Token::Plus,

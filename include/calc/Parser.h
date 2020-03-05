@@ -2,6 +2,7 @@
 #define CALC_PARSER_H
 
 #include "calc/Lexer.h"
+#include "calc/Token.h"
 
 #include <optional>
 
@@ -26,7 +27,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return T;
     }
-    std::cerr << "error: expected '" << K << "'\n";
+    std::cerr << "error: expected " << Token::toString(K) << "\n";
     return std::nullopt;
   }
 

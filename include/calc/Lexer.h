@@ -5,13 +5,14 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <optional>
 #include <vector>
 
 namespace calc {
 
 class Lexer {
 public:
-  virtual Token peek() const = 0;
+  virtual const Token &peek() const = 0;
   virtual Token pop() = 0;
   virtual bool empty() const = 0;
 };
@@ -22,7 +23,7 @@ public:
     Toks.insert(Toks.end(), TS.begin(), TS.end());
     Cursor = Toks.begin();
   }
-  Token peek() const override;
+  const Token &peek() const override;
   Token pop() override;
   bool empty() const override;
 
@@ -32,14 +33,21 @@ public:
 
 class IOSLexer : public Lexer {
 public:
-  IOSLexer(std::iostream &IOS) : IOS(IOS) {}
+  IOSLexer(std::istream &IS)
+    : IS(IS), Tok(Token::Unknown) {
+    next();
+  }
 
-  Token peek() const override;
+  const Token &peek() const override;
   Token pop() override;
   bool empty() const override;
 
+protected:
+  void next();
+
 private:
-  std::iostream &IOS;
+  std::optional<Token> Tok;
+  std::istream &IS;
 };
 
 } // namespace calc
