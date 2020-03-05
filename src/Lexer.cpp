@@ -22,19 +22,16 @@ const Token &IOSLexer::peek() const {
 }
 
 Token IOSLexer::pop() {
-  Token Ret = *Tok;
-  next();
-  return Ret;
+  return *std::exchange(Tok, next());
 }
 
 bool IOSLexer::empty() const {
   return !Tok.has_value() && IS.eof();
 }
 
-void IOSLexer::next() {
+std::optional<Token> IOSLexer::next() {
   if (IS.eof()) {
-    Tok = std::nullopt;
-    return;
+    return std::nullopt;
   }
 
   char c = IS.peek();
@@ -47,26 +44,22 @@ void IOSLexer::next() {
 
   if (c == '+') {
     IS.get();
-    Tok = Token(Token::Plus);
-    return;
+    return Token(Token::Plus);
   }
 
   if (c == '-') {
     IS.get();
-    Tok = Token(Token::Minus);
-    return;
+    return Token(Token::Minus);
   }
 
   if (c == '*') {
     IS.get();
-    Tok = Token(Token::Times);
-    return;
+    return Token(Token::Times);
   }
 
   if (c == '/') {
     IS.get();
-    Tok = Token(Token::Divide);
-    return;
+    return Token(Token::Divide);
   }
 
   if (std::isdigit(c)) {
@@ -76,9 +69,8 @@ void IOSLexer::next() {
       Terminal << c;
       c = IS.peek();
     }
-    Tok = Token(Token::Number, Terminal.str());
-    return;
+    return Token(Token::Number, Terminal.str());
   }
 
-  Tok = std::nullopt;
+  return std::nullopt;
 }

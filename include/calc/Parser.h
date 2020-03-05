@@ -75,8 +75,7 @@ public:
   // factor : `number`
   //        | `(` exp `)`
   Expr parseFactor() {
-    if (peek(Token::LParen)) {
-      expect(Token::LParen);
+    if (accept(Token::LParen)) {
       Expr res = parseExpr();
       expect(Token::RParen);
       return res;

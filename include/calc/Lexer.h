@@ -35,7 +35,7 @@ class IOSLexer : public Lexer {
 public:
   IOSLexer(std::istream &IS)
     : IS(IS), Tok(Token::Unknown) {
-    next();
+    Tok = next();
   }
 
   const Token &peek() const override;
@@ -43,7 +43,7 @@ public:
   bool empty() const override;
 
 protected:
-  void next();
+  std::optional<Token> next();
 
 private:
   std::optional<Token> Tok;
