@@ -23,5 +23,6 @@ int main(int argc, char **argv) {
 
   Parser<int> P(L);
 
-  std::cout << "Result: " << P.parseExpr() << "\n";
+  int Res = P.parseExpr();
+  std::cout << "Result: " << Res << "\n";
 }

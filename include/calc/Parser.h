@@ -28,7 +28,7 @@ public:
       return T;
     }
     std::cerr << "error: expected " << Token::toString(K) << "\n";
-    return std::nullopt;
+    exit(-1);
   }
 
   bool peek(Token::Kind K) {
