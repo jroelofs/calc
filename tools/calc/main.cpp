@@ -7,9 +7,18 @@
 
 using namespace calc;
 
+static void usage() {
+    std::cerr << "usage:\n"
+              << "\tcrepl <expression>\n";
+    exit(-1);
+}
+
 int main(int argc, char **argv) {
 #if 1
-  if (argc != 2) return -1;
+  if (argc != 2) {
+    usage();
+    return -1;
+  }
   std::stringstream SS(argv[1]);
   IOSLexer L(SS);
 #elif 0
@@ -24,5 +33,5 @@ int main(int argc, char **argv) {
   Parser<int> P(L);
 
   int Res = P.parseExpr();
-  std::cout << "Result: " << Res << "\n";
+  std::cout << Res << "\n";
 }
