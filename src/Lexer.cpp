@@ -62,6 +62,16 @@ std::optional<Token> IOSLexer::next() {
     return Token(Token::Divide);
   }
 
+  if (c == '(') {
+    IS.get();
+    return Token(Token::LParen);
+  }
+
+  if (c == ')') {
+    IS.get();
+    return Token(Token::RParen);
+  }
+
   if (std::isdigit(c)) {
     std::stringstream Terminal;
     while (std::isdigit(c)) {
