@@ -1,6 +1,6 @@
 set(sources
   main.cpp)
 
-add_executable(calc ${sources})
+add_executable(crepl ${sources})
 
-target_link_libraries(calc libcalc)
+target_link_libraries(crepl calc)
