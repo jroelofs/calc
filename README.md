@@ -38,3 +38,9 @@ $ ./bin/crepl
 12
 > q
 ```
+
+### Test
+
+```sh
+$ ninja check
+```

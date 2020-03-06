@@ -17,3 +17,4 @@ add_subdirectory(unittests)
 
 enable_testing()
 add_test(NAME unittests COMMAND ${CMAKE_BINARY_DIR}/bin/unittests)
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS unittests)
