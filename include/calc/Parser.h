@@ -8,6 +8,10 @@
 
 namespace calc {
 
+// Expr is expected to be either a numeric type like `int`, or a class that
+// implements similar interfaces (but retains value semantics). An interesting
+// implementation would be to build a class that has all the relevant operator
+// overloads, that constructs an AST.
 template <typename Expr> class Parser {
 public:
   Parser(Lexer &Lexer) : Lexer(Lexer) {}
@@ -65,6 +69,8 @@ public:
       if (accept(Token::Times)) {
         res = res * parseFactor();
       } else if (accept(Token::Divide)) {
+        // Clients can deal with potential div-by-0 here by supplying a class to
+        // instantiate `Expr` as that does the appropriate checking.
         res = res / parseFactor();
       }
     }
