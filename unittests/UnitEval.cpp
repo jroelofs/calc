@@ -15,7 +15,7 @@ TEST(Eval, MockLexer1) {
   // clang-format on
 
   Parser<int> P(L);
-  EXPECT_EQ(P.parseExpr(), 3);
+  EXPECT_EQ(P.parse(), 3);
 }
 
 TEST(Eval, MockLexer2) {
@@ -30,7 +30,7 @@ TEST(Eval, MockLexer2) {
   // clang-format on
 
   Parser<int> P(L);
-  EXPECT_EQ(P.parseExpr(), 5);
+  EXPECT_EQ(P.parse(), 5);
 }
 
 TEST(Eval, Expressions) {
@@ -44,7 +44,7 @@ TEST(Eval, Expressions) {
     {"1+1", 2},
     {"1+2*3", 7},
     {"2*(1+1)", 4},
-    {"1 + 1", 2}
+    {"1 + 1 ", 2}
   };
   // clang-format on
 
@@ -52,6 +52,28 @@ TEST(Eval, Expressions) {
     std::stringstream SS(v.input);
     IOSLexer L(SS);
     Parser<int> P(L);
-    EXPECT_EQ(P.parseExpr(), v.expected) << v.input;
+    EXPECT_EQ(P.parse(), v.expected) << v.input;
+  }
+}
+
+TEST(Eval, ParseErrors) {
+  // clang-format off
+  struct {
+    const char *input;
+    const char *message;
+  } vec[] = {
+    { "a", "expected number" },
+    { "1 + a", "expected number" },
+    { "(1))", "unexpected trailing characters" },
+  };
+  // clang-format on
+
+  for (const auto &v : vec) {
+    std::stringstream SS(v.input);
+    IOSLexer L(SS);
+    Parser<int> P(L);
+    ErrorOr<int> Res = P.parse();
+    EXPECT_TRUE(Res.hasError()) << v.input;
+    EXPECT_EQ(Res.getError(), v.message) << v.input;
   }
 }

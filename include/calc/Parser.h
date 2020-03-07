@@ -42,6 +42,19 @@ public:
     return Lexer.peek().K == K;
   }
 
+  ErrorOr<Expr> parse() {
+    ErrorOr<Expr> res = parseExpr();
+    if (res.hasError()) {
+      return res;
+    }
+
+    if (!Lexer.empty()) {
+      return makeError("unexpected trailing characters");
+    }
+
+    return res;
+  }
+
   // exp : term
   //     | exp `+` term
   //     | exp `-` term

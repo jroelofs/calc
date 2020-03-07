@@ -17,7 +17,7 @@ static void usage() {
 
 static void evaluate(Lexer &L) {
   Parser<int> P(L);
-  ErrorOr<int> Res = P.parseExpr();
+  ErrorOr<int> Res = P.parse();
   if (Res) {
     std::cout << *Res << "\n";
   } else {
