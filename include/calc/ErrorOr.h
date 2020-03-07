@@ -17,7 +17,6 @@ static ErrorMsg makeError(const Error &err) { return ErrorMsg(err); }
 template <typename T>
 class ErrorOr {
 public:
-
   ErrorOr() : value(), containsError(false) {}
   ErrorOr(const T &rhs) : containsError(false) { new (&value) T(rhs); }
   ErrorOr(const ErrorOr<T> &rhs) : containsError(rhs.containsError) {
