@@ -3,17 +3,20 @@
 
 namespace calc {
 
-template <typename T> class Erroneous {
+using Error = std::string;
+
+class ErrorMsg {
 public:
-  Erroneous(const T &val) : value(val) {}
-  Erroneous(T &&val) : value(std::move(val)) {}
-  T value;
+  ErrorMsg(const Error &error) : error(error) {}
+  ErrorMsg(Error &&error) : error(std::move(error)) {}
+  Error error;
 };
+
+static ErrorMsg makeError(const Error &err) { return ErrorMsg(err); }
 
 template <typename T>
 class ErrorOr {
 public:
-  using Error = std::string;
 
   ErrorOr() : value(), containsError(false) {}
   ErrorOr(const T &rhs) : containsError(false) { new (&value) T(rhs); }
@@ -27,8 +30,8 @@ public:
   explicit ErrorOr(T &&rhs) : containsError(false) {
     new (&value) T(std::forward<T>(rhs));
   }
-  ErrorOr(const Erroneous<Error> &err) : containsError(true) {
-    new (&error) Error(err.value);
+  ErrorOr(const ErrorMsg &err) : containsError(true) {
+    new (&error) Error(err.error);
   }
 
   ~ErrorOr() {
@@ -75,8 +78,6 @@ public:
     assert(!containsError);
     return &value;
   }
-
-  static ErrorOr makeError(const Error &err) { return ErrorOr(Erroneous(err)); }
 
   union {
     T value;

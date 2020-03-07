@@ -32,7 +32,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
-    return ErrorOr<Token>::makeError(std::string("expected ") + Token::toString(K));
+    return makeError(std::string("expected ") + Token::toString(K));
   }
 
   bool peek(Token::Kind K) {
@@ -97,7 +97,7 @@ public:
       return Expr(std::stoi(T->V));
     }
 
-    return ErrorOr<Expr>::makeError(T.getError());
+    return makeError(T.getError());
   }
 
 private:
