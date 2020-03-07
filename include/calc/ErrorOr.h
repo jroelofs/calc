@@ -172,7 +172,7 @@ bool operator==(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
     return rhs.hasError();
   }
 
-  if (!rhs.hasError()) {
+  if (rhs.hasError()) {
     return false;
   }
 

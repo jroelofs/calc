@@ -36,4 +36,9 @@ TEST(ErrorOr, OperatorMath) {
     EXPECT_EQ(Err1, Err1 + Three);
     EXPECT_EQ(Err1, Err1 + Err2);
     EXPECT_EQ(Err2, Err2 + Err1);
+
+    EXPECT_FALSE(Three == Err1);
+    EXPECT_FALSE(Err1 == Three);
+    EXPECT_FALSE(Three == Five);
+    EXPECT_TRUE(Three == Three);
 }
