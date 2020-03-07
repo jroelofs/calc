@@ -23,7 +23,6 @@ public:
   Token(Kind K) : K(K) {}
   Token(Kind K, std::string V) : K(K), V(V) {}
 
-  static const char *toString(Token::Kind Kind);
   void print(std::ostream &OS) const;
   void dump() const;
 
@@ -32,6 +31,7 @@ public:
 };
 
 std::ostream &operator<<(std::ostream &OS, const Token &Tok);
+const char *toString(Token::Kind Kind);
 
 } // namespace calc
 

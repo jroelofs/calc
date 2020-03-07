@@ -28,7 +28,7 @@ std::ostream &operator<<(std::ostream &OS, const Token &Tok) {
   return OS;
 }
 
-const char *Token::toString(Token::Kind Kind) {
+const char *calc::toString(Token::Kind Kind) {
   switch (Kind) {
   case Token::Number: return "number";
   case Token::Unknown: return "<unknown>";

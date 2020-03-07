@@ -32,7 +32,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
-    return Error(std::string("expected ") + Token::toString(K));
+    return Error(std::string("expected ") + toString(K));
   }
 
   bool peek(Token::Kind K) {
