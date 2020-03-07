@@ -16,8 +16,8 @@ static void usage() {
 }
 
 static void evaluate(Lexer &L) {
-  Parser<int> P(L);
-  ErrorOr<int> Res = P.parse();
+  Parser<float> P(L);
+  ErrorOr<float> Res = P.parse();
   if (Res) {
     std::cout << *Res << "\n";
   } else {

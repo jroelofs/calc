@@ -57,6 +57,13 @@ TEST(Eval, Expressions) {
   }
 }
 
+TEST(Eval, Floats) {
+  std::stringstream SS("3/2");
+  IOSLexer L(SS);
+  Parser<float> P(L);
+  EXPECT_EQ(P.parse(), 1.5f);
+}
+
 TEST(Eval, ParseErrors) {
   // clang-format off
   struct {
