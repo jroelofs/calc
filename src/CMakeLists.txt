@@ -1,4 +1,5 @@
 set(sources
+  ErrorOr.cpp
   Lexer.cpp
   Token.cpp)
 

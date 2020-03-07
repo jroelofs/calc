@@ -32,7 +32,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
-    return makeError(std::string("expected ") + Token::toString(K));
+    return Error(std::string("expected ") + Token::toString(K));
   }
 
   bool peek(Token::Kind K) {
@@ -44,12 +44,13 @@ public:
 
   ErrorOr<Expr> parse() {
     ErrorOr<Expr> res = parseExpr();
+
     if (res.hasError()) {
       return res;
     }
 
     if (!Lexer.empty()) {
-      return makeError("unexpected trailing characters");
+      return Error("unexpected trailing characters");
     }
 
     return res;
@@ -110,7 +111,7 @@ public:
       return Expr(std::stoi(T->V));
     }
 
-    return makeError(T.getError());
+    return T.getError();
   }
 
 private:

@@ -74,6 +74,6 @@ TEST(Eval, ParseErrors) {
     Parser<int> P(L);
     ErrorOr<int> Res = P.parse();
     EXPECT_TRUE(Res.hasError()) << v.input;
-    EXPECT_EQ(Res.getError(), v.message) << v.input;
+    EXPECT_EQ(Res.getError().Msg, v.message) << v.input;
   }
 }

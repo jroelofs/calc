@@ -1,18 +1,23 @@
 #ifndef CALC_ERROROR_H
 #define CALC_ERROROR_H
 
+#include <string>
+
 namespace calc {
 
-using Error = std::string;
-
-class ErrorMsg {
+class Error {
 public:
-  ErrorMsg(const Error &error) : error(error) {}
-  ErrorMsg(Error &&error) : error(std::move(error)) {}
-  Error error;
-};
+  Error(const std::string &Msg) : Msg(Msg) {}
+  Error(std::string &&Msg) : Msg(std::move(Msg)) {}
+  Error(const Error &E) : Msg(E.Msg) {}
+  Error(Error &&E) : Msg(std::move(E.Msg)) {}
 
-static ErrorMsg makeError(const Error &err) { return ErrorMsg(err); }
+  void print(std::ostream &OS) const;
+  void dump() const;
+  friend std::ostream &operator<<(std::ostream &OS, const Error &E);
+
+  std::string Msg;
+};
 
 template <typename T>
 class ErrorOr {
@@ -28,8 +33,8 @@ public:
   explicit ErrorOr(T &&rhs) : containsError(false) {
     new (&value) T(std::forward<T>(rhs));
   }
-  ErrorOr(const ErrorMsg &err) : containsError(true) {
-    new (&error) Error(err.error);
+  ErrorOr(const Error &err) : containsError(true) {
+    new (&error) Error(err.Msg);
   }
 
   ~ErrorOr() {
@@ -150,9 +155,13 @@ template<typename T>
 bool operator==(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
   if (lhs.hasError()) {
     return rhs.hasError();
-  } else {
-    return !rhs.hasError() && *lhs == *rhs;
   }
+
+  if (!rhs.hasError()) {
+    return false;
+  }
+
+  return *lhs == *rhs;
 }
 
 } // namespace calc
