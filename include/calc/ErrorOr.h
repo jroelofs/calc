@@ -127,7 +127,7 @@ ErrorOr<T> operator/(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
     return rhs;
   }
 
-  return *lhs - *rhs;
+  return *lhs / *rhs;
 }
 
 template<typename T>
