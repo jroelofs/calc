@@ -30,8 +30,12 @@ int main(int argc, char **argv) {
       std::stringstream SS(line);
       IOSLexer L(SS);
       Parser<int> P(L);
-      int Res = P.parseExpr();
-      std::cout << Res << "\n";
+      ErrorOr<int> Res = P.parseExpr();
+      if (Res) {
+        std::cout << *Res << "\n";
+      } else {
+        std::cerr << Res.getError() << "\n";
+      }
     } while (true);
   } else if (argc == 2) {
     if (std::string("-h") == argv[1] ||
@@ -44,8 +48,12 @@ int main(int argc, char **argv) {
     if (std::string("-") == argv[1]) {
       IOSLexer L(std::cin);
       Parser<int> P(L);
-      int Res = P.parseExpr();
-      std::cout << Res << "\n";
+      ErrorOr<int> Res = P.parseExpr();
+      if (Res) {
+        std::cout << *Res << "\n";
+      } else {
+        std::cerr << Res.getError() << "\n";
+      }
       return 0;
     }
 
@@ -53,8 +61,12 @@ int main(int argc, char **argv) {
     std::stringstream SS(argv[1]);
     IOSLexer L(SS);
     Parser<int> P(L);
-    int Res = P.parseExpr();
-    std::cout << Res << "\n";
+    ErrorOr<int> Res = P.parseExpr();
+    if (Res) {
+      std::cout << *Res << "\n";
+    } else {
+      std::cerr << Res.getError() << "\n";
+    }
     return 0;
   }
 

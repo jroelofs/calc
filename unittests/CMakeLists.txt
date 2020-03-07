@@ -23,7 +23,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  EXCLUDE_FROM_ALL)
 
 set(sources
-  UnitEval.cpp)
+  UnitEval.cpp
+  UnitErrorOr.cpp)
 
 add_executable(unittests ${sources})
 

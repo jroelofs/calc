@@ -13,8 +13,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_subdirectory(src)
 add_subdirectory(tools)
-add_subdirectory(unittests)
 
 enable_testing()
+add_subdirectory(unittests)
+
 add_test(NAME unittests COMMAND ${CMAKE_BINARY_DIR}/bin/unittests)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS unittests)

@@ -3,6 +3,7 @@
 
 #include "calc/Lexer.h"
 #include "calc/Token.h"
+#include "calc/ErrorOr.h"
 
 #include <optional>
 
@@ -27,12 +28,11 @@ public:
     return std::nullopt;
   }
 
-  std::optional<Token> expect(Token::Kind K) {
+  ErrorOr<Token> expect(Token::Kind K) {
     if (std::optional<Token> T = accept(K)) {
-      return T;
+      return *T;
     }
-    std::cerr << "error: expected " << Token::toString(K) << "\n";
-    exit(-1);
+    return ErrorOr<Token>::makeError(std::string("expected ") + Token::toString(K));
   }
 
   bool peek(Token::Kind K) {
@@ -45,10 +45,10 @@ public:
   // exp : term
   //     | exp `+` term
   //     | exp `-` term
-  Expr parseExpr() {
-    Expr res = parseTerm();
+  ErrorOr<Expr> parseExpr() {
+    ErrorOr<Expr> res = parseTerm();
 
-    while (peek(Token::Plus) || peek(Token::Minus)) {
+    while (res && (peek(Token::Plus) || peek(Token::Minus))) {
       if (accept(Token::Plus)) {
         res = res + parseTerm();
       } else if (accept(Token::Minus)) {
@@ -62,10 +62,10 @@ public:
   // term : factor
   //      | factor `*` term
   //      | factor `/` term
-  Expr parseTerm() {
-    Expr res = parseFactor();
+  ErrorOr<Expr> parseTerm() {
+    ErrorOr<Expr> res = parseFactor();
 
-    while (peek(Token::Times) || peek(Token::Divide)) {
+    while (res && (peek(Token::Times) || peek(Token::Divide))) {
       if (accept(Token::Times)) {
         res = res * parseFactor();
       } else if (accept(Token::Divide)) {
@@ -80,22 +80,24 @@ public:
 
   // factor : `number`
   //        | `(` exp `)`
-  Expr parseFactor() {
+  ErrorOr<Expr> parseFactor() {
     if (accept(Token::LParen)) {
-      Expr res = parseExpr();
+      ErrorOr<Expr> res = parseExpr();
       expect(Token::RParen);
       return res;
     }
 
-    Expr res = parseNumber();
-    return res;
+    return parseNumber();
   }
 
-  Expr parseNumber() {
-    if (std::optional<Token> T = expect(Token::Number)) {
+  ErrorOr<Expr> parseNumber() {
+    ErrorOr<Token> T = expect(Token::Number);
+
+    if (T.hasValue()) {
       return Expr(std::stoi(T->V));
     }
-    return Expr();
+
+    return ErrorOr<Expr>::makeError(T.getError());
   }
 
 private:
