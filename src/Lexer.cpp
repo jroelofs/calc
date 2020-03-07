@@ -42,34 +42,23 @@ std::optional<Token> IOSLexer::next() {
     c = IS.peek();
   }
 
-  if (c == '+') {
-    IS.get();
-    return Token(Token::Plus);
-  }
+  const struct {
+    char C;
+    Token::Kind Kind;
+  } Matches[] = {
+    { '+', Token::Plus },
+    { '-', Token::Minus },
+    { '*', Token::Times },
+    { '/', Token::Divide },
+    { '(', Token::LParen },
+    { ')', Token::RParen },
+  };
 
-  if (c == '-') {
-    IS.get();
-    return Token(Token::Minus);
-  }
-
-  if (c == '*') {
-    IS.get();
-    return Token(Token::Times);
-  }
-
-  if (c == '/') {
-    IS.get();
-    return Token(Token::Divide);
-  }
-
-  if (c == '(') {
-    IS.get();
-    return Token(Token::LParen);
-  }
-
-  if (c == ')') {
-    IS.get();
-    return Token(Token::RParen);
+  for (const auto &Match : Matches) {
+    if (c == Match.C) {
+      IS.get();
+      return Token(Match.Kind);
+    }
   }
 
   if (std::isdigit(c)) {
