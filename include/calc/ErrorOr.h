@@ -64,6 +64,15 @@ public:
   explicit operator bool() const { return !containsError; }
   const Error &getError() const { assert(containsError); return error; }
 
+  void print(std::ostream &OS) const {
+    if (containsError) {
+      OS << error;
+    } else {
+      OS << value;
+    }
+  }
+  void dump() const;
+
   T &operator*() {
     assert(!containsError);
     return value;
@@ -88,6 +97,12 @@ public:
   };
   bool containsError;
 };
+
+template<typename T>
+std::ostream &operator<<(std::ostream &OS, ErrorOr<T> &E) {
+  E.print(OS);
+  return OS;
+}
 
 template<typename T>
 ErrorOr<T> operator*(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
