@@ -15,13 +15,16 @@ static void usage() {
     exit(-1);
 }
 
-static void evaluate(Lexer &L) {
+static void evaluate(const std::string &Prefix, Lexer &L) {
   Parser<float> P(L);
   ErrorOr<float> Res = P.parse();
   if (Res) {
     std::cout << *Res << "\n";
   } else {
-    std::cerr << Res.getError() << "\n";
+    SLoc Loc = Res.getError().Loc;
+    if (Prefix != "")
+      std::cerr << Prefix << std::string(Loc.second, ' ') << "^\n";
+    std::cerr << "error: " << Res.getError() << "\n";
   }
 }
 
@@ -39,7 +42,7 @@ int main(int argc, char **argv) {
 
       std::stringstream SS(line);
       IOSLexer L(SS);
-      evaluate(L);
+      evaluate("  ", L);
     } while (true);
   } else if (argc == 2) {
     if (std::string("-h") == argv[1] ||
@@ -51,14 +54,14 @@ int main(int argc, char **argv) {
     // Input via pipe
     if (std::string("-") == argv[1]) {
       IOSLexer L(std::cin);
-      evaluate(L);
+      evaluate("", L);
       return 0;
     }
 
     // Input via command-line argument
     std::stringstream SS(argv[1]);
     IOSLexer L(SS);
-    evaluate(L);
+    evaluate(std::string(argv[1]) + "\n", L);
     return 0;
   }
 

@@ -5,17 +5,20 @@
 
 namespace calc {
 
+using SLoc = std::pair<int, int>;
+
 class Error {
 public:
-  Error(const std::string &Msg) : Msg(Msg) {}
-  Error(std::string &&Msg) : Msg(std::move(Msg)) {}
-  Error(const Error &E) : Msg(E.Msg) {}
-  Error(Error &&E) : Msg(std::move(E.Msg)) {}
+  Error(SLoc Loc, const std::string &Msg) : Loc(Loc), Msg(Msg) {}
+  Error(SLoc Loc, std::string &&Msg) : Loc(Loc), Msg(std::move(Msg)) {}
+  Error(const Error &E) : Loc(E.Loc), Msg(E.Msg) {}
+  Error(Error &&E) : Loc(E.Loc), Msg(std::move(E.Msg)) {}
 
   void print(std::ostream &OS) const;
   void dump() const;
   friend std::ostream &operator<<(std::ostream &OS, const Error &E);
 
+  SLoc Loc;
   std::string Msg;
 };
 
@@ -33,9 +36,7 @@ public:
   explicit ErrorOr(T &&rhs) : containsError(false) {
     new (&value) T(std::forward<T>(rhs));
   }
-  ErrorOr(const Error &err) : containsError(true) {
-    new (&error) Error(err.Msg);
-  }
+  ErrorOr(const Error &err) : containsError(true) { new (&error) Error(err); }
 
   ~ErrorOr() {
     if (containsError) {

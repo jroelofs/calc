@@ -32,7 +32,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
-    return Error(std::string("expected ") + toString(K));
+    return Error(Lexer.location(), std::string("expected ") + toString(K));
   }
 
   bool peek(Token::Kind K) {
@@ -50,7 +50,7 @@ public:
     }
 
     if (!Lexer.empty()) {
-      return Error("unexpected trailing characters");
+      return Error(Lexer.location(), "unexpected trailing characters");
     }
 
     return res;

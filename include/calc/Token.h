@@ -1,10 +1,13 @@
 #ifndef CALC_TOKEN_H
 #define CALC_TOKEN_H
 
-#include <string>
 #include <iostream>
+#include <string>
+#include <utility>
 
 namespace calc {
+
+using SLoc = std::pair<int, int>;
 
 class Token {
 public:
@@ -20,12 +23,13 @@ public:
   } Kind;
 
   Token() : K(Token::Unknown) {}
-  Token(Kind K) : K(K) {}
-  Token(Kind K, std::string V) : K(K), V(V) {}
+  Token(SLoc Loc, Kind K) : K(K) {}
+  Token(SLoc Loc, Kind K, std::string V) : K(K), V(V) {}
 
   void print(std::ostream &OS) const;
   void dump() const;
 
+  SLoc Loc;
   Kind K;
   std::string V;
 };

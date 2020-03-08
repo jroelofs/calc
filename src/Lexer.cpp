@@ -29,6 +29,8 @@ bool IOSLexer::empty() const {
   return !Tok.has_value() && IS.eof();
 }
 
+SLoc IOSLexer::location() const { return std::make_pair(Line, Col); }
+
 std::optional<Token> IOSLexer::next() {
   if (IS.eof()) {
     return std::nullopt;
@@ -39,6 +41,12 @@ std::optional<Token> IOSLexer::next() {
   // Skip whitespace
   while (std::isspace(c)) {
     IS.get();
+    if (c == '\n') {
+      Line++;
+      Col = 0;
+    } else {
+      Col++;
+    }
     c = IS.peek();
   }
 
@@ -57,7 +65,8 @@ std::optional<Token> IOSLexer::next() {
   for (const auto &Match : Matches) {
     if (c == Match.C) {
       IS.get();
-      return Token(Match.Kind);
+      Col++;
+      return Token(location(), Match.Kind);
     }
   }
 
@@ -65,10 +74,11 @@ std::optional<Token> IOSLexer::next() {
     std::stringstream Terminal;
     while (std::isdigit(c)) {
       IS.get();
+      Col++;
       Terminal << c;
       c = IS.peek();
     }
-    return Token(Token::Number, Terminal.str());
+    return Token(location(), Token::Number, Terminal.str());
   }
 
   return std::nullopt;

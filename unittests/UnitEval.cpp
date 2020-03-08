@@ -1,16 +1,17 @@
-#include "gtest/gtest.h"
-
 #include "calc/Lexer.h"
 #include "calc/Parser.h"
+#include "gtest/gtest.h"
 
 using namespace calc;
+
+static constexpr SLoc NoLoc = SLoc(-1, -1);
 
 TEST(Eval, MockLexer1) {
   // clang-format off
   VectorLexer L({
-    Token(Token::Number, "1"),
-    Token::Plus,
-    Token(Token::Number, "2")
+    Token(NoLoc, Token::Number, "1"),
+    Token(NoLoc, Token::Plus),
+    Token(NoLoc, Token::Number, "2")
   });
   // clang-format on
 
@@ -21,11 +22,11 @@ TEST(Eval, MockLexer1) {
 TEST(Eval, MockLexer2) {
   // clang-format off
   VectorLexer L({
-    Token(Token::Number, "1"),
-    Token::Times,
-    Token(Token::Number, "2"),
-    Token::Plus,
-    Token(Token::Number, "3")
+    Token(NoLoc, Token::Number, "1"),
+    Token(NoLoc, Token::Times),
+    Token(NoLoc, Token::Number, "2"),
+    Token(NoLoc, Token::Plus),
+    Token(NoLoc, Token::Number, "3")
   });
   // clang-format on
 

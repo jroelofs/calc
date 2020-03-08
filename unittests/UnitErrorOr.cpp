@@ -1,9 +1,10 @@
-#include "gtest/gtest.h"
-
 #include "calc/ErrorOr.h"
+#include "gtest/gtest.h"
 #include <string>
 
 using namespace calc;
+
+static constexpr SLoc NoLoc = SLoc(-1, -1);
 
 TEST(ErrorOr, Construction) {
     ErrorOr<int> E1(1234);
@@ -12,7 +13,7 @@ TEST(ErrorOr, Construction) {
     ErrorOr<std::string> E2("Houston, we don't have a problem.");
     EXPECT_FALSE(E2.hasError());
 
-    ErrorOr<int> E3 = Error("He's dead, Jim.");
+    ErrorOr<int> E3 = Error(NoLoc, "He's dead, Jim.");
     EXPECT_TRUE(E3.hasError());
 }
 
@@ -27,8 +28,8 @@ TEST(ErrorOr, OperatorBool) {
 TEST(ErrorOr, OperatorMath) {
     ErrorOr<int> Three = 3;
     ErrorOr<int> Five = 5;
-    ErrorOr<int> Err1 = Error("error1");
-    ErrorOr<int> Err2 = Error("error2");
+    ErrorOr<int> Err1 = Error(NoLoc, "error1");
+    ErrorOr<int> Err2 = Error(NoLoc, "error2");
 
     EXPECT_EQ(15, Three * Five);
     EXPECT_EQ(8, Three + Five);
