@@ -24,7 +24,7 @@ public:
     return std::nullopt;
   }
 
-  ErrorOr<Token> expect(Token::Kind K) {
+  [[nodiscard]] ErrorOr<Token> expect(Token::Kind K) {
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
@@ -91,7 +91,9 @@ public:
   ErrorOr<Expr> parseFactor() {
     if (accept(Token::LParen)) {
       ErrorOr<Expr> res = parseExpr();
-      expect(Token::RParen);
+      ErrorOr<Token> paren = expect(Token::RParen);
+      if (paren.hasError())
+        return paren.getError();
       return res;
     }
 

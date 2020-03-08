@@ -86,6 +86,7 @@ TEST(Eval, ParseErrors) {
     { "1 + a", "expected number" },
     { "(1))", "unexpected trailing characters" },
     { "a + 2", "expected number" },
+    { "(1", "expected )" },
   };
   // clang-format on
 
