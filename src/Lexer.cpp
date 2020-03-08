@@ -5,28 +5,35 @@
 
 using namespace calc;
 
-const Token &VectorLexer::peek() const {
-  assert(Cursor != Toks.end());
-  return *Cursor;
+std::optional<Token> VectorLexer::peek() {
+  if (!Tok.has_value())
+    if (Cursor != Toks.end())
+      Tok = *Cursor++;
+  
+  return *Tok;
 }
 
 Token VectorLexer::pop() {
-  assert(Cursor != Toks.end());
-  return *Cursor++;
+  assert(Tok.has_value());
+  return *std::exchange(Tok, std::nullopt);
 }
 
 bool VectorLexer::empty() const { return Cursor == Toks.end(); }
 
-const Token &IOSLexer::peek() const {
-  return *Tok;
+std::optional<Token> IOSLexer::peek() {
+  if (!Tok.has_value()) {
+    Tok = next();
+  }
+  return Tok;
 }
 
 Token IOSLexer::pop() {
-  return *std::exchange(Tok, next());
+  assert(Tok.has_value());
+  return *std::exchange(Tok, std::nullopt);
 }
 
 bool IOSLexer::empty() const {
-  return !Tok.has_value() && IS.eof();
+  return IS.eof();
 }
 
 SLoc IOSLexer::location() const { return std::make_pair(Line, Col); }
@@ -81,5 +88,5 @@ std::optional<Token> IOSLexer::next() {
     return Token(location(), Token::Number, Terminal.str());
   }
 
-  return std::nullopt;
+  return Token(location(), Token::Unknown);
 }

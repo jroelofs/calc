@@ -12,7 +12,7 @@ namespace calc {
 
 class Lexer {
 public:
-  virtual const Token &peek() const = 0;
+  virtual std::optional<Token> peek() = 0;
   virtual Token pop() = 0;
   virtual bool empty() const = 0;
   virtual SLoc location() const = 0;
@@ -24,20 +24,21 @@ public:
     Toks.insert(Toks.end(), TS.begin(), TS.end());
     Cursor = Toks.begin();
   }
-  const Token &peek() const override;
+  std::optional<Token> peek() override;
   Token pop() override;
   bool empty() const override;
   virtual SLoc location() const override { return std::make_pair(0, 0); }
 
+  std::optional<Token> Tok;
   std::vector<Token> Toks;
   decltype(Toks.begin()) Cursor;
 };
 
 class IOSLexer : public Lexer {
 public:
-  IOSLexer(std::istream &IS) : IS(IS), Tok(), Line(0), Col(0) { Tok = next(); }
+  IOSLexer(std::istream &IS) : IS(IS), Tok(), Line(0), Col(0) {}
 
-  const Token &peek() const override;
+  std::optional<Token> peek() override;
   Token pop() override;
   bool empty() const override;
   virtual SLoc location() const override;

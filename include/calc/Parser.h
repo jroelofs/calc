@@ -18,12 +18,10 @@ public:
   Parser(Lexer &Lexer) : Lexer(Lexer) {}
 
   std::optional<Token> accept(Token::Kind K) {
-    if (Lexer.empty()) {
-      return std::nullopt;
-    }
-
-    if (Lexer.peek().K == K) {
-      return Lexer.pop();
+    if (std::optional<Token> T = Lexer.peek()) {
+      if (T->K == K) {
+        return Lexer.pop();
+      }
     }
     return std::nullopt;
   }
@@ -33,13 +31,6 @@ public:
       return *T;
     }
     return Error(Lexer.location(), std::string("expected ") + toString(K));
-  }
-
-  bool peek(Token::Kind K) {
-    if (Lexer.empty()) {
-      return false;
-    }
-    return Lexer.peek().K == K;
   }
 
   ErrorOr<Expr> parse() {
@@ -62,11 +53,13 @@ public:
   ErrorOr<Expr> parseExpr() {
     ErrorOr<Expr> res = parseTerm();
 
-    while (res && (peek(Token::Plus) || peek(Token::Minus))) {
+    while (res) {
       if (accept(Token::Plus)) {
         res = res + parseTerm();
       } else if (accept(Token::Minus)) {
         res = res - parseTerm();
+      } else {
+        break;
       }
     }
 
@@ -79,13 +72,15 @@ public:
   ErrorOr<Expr> parseTerm() {
     ErrorOr<Expr> res = parseFactor();
 
-    while (res && (peek(Token::Times) || peek(Token::Divide))) {
+    while (res) {
       if (accept(Token::Times)) {
         res = res * parseFactor();
       } else if (accept(Token::Divide)) {
         // Clients can deal with potential div-by-0 here by supplying a class to
         // instantiate `Expr` as that does the appropriate checking.
         res = res / parseFactor();
+      } else {
+        break;
       }
     }
 

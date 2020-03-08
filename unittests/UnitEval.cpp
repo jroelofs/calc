@@ -54,7 +54,11 @@ TEST(Eval, Expressions) {
     std::stringstream SS(v.input);
     IOSLexer L(SS);
     Parser<int> P(L);
-    EXPECT_EQ(P.parse(), v.expected) << v.input;
+    ErrorOr<int> Res = P.parse();
+    if (Res.hasError()) {
+      EXPECT_TRUE(false) << Res.getError();
+    }
+    EXPECT_EQ(Res, v.expected) << v.input;
   }
 }
 
@@ -74,6 +78,7 @@ TEST(Eval, ParseErrors) {
     { "a", "expected number" },
     { "1 + a", "expected number" },
     { "(1))", "unexpected trailing characters" },
+    { "a + 2", "expected number" },
   };
   // clang-format on
 
