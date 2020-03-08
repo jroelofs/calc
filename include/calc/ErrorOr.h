@@ -25,16 +25,16 @@ public:
 template <typename T>
 class ErrorOr {
 public:
-  ErrorOr(const T &rhs) : containsError(false) { new (&value) T(rhs); }
-  ErrorOr(const ErrorOr<T> &rhs) : containsError(rhs.containsError) {
+  ErrorOr(const T &RHS) : containsError(false) { new (&value) T(RHS); }
+  ErrorOr(const ErrorOr<T> &RHS) : containsError(RHS.containsError) {
     if (containsError) {
-      new (&error) Error(rhs.error);
+      new (&error) Error(RHS.error);
     } else {
-      new (&value) T(rhs.value);
+      new (&value) T(RHS.value);
     }
   }
-  explicit ErrorOr(T &&rhs) : containsError(false) {
-    new (&value) T(std::forward<T>(rhs));
+  explicit ErrorOr(T &&RHS) : containsError(false) {
+    new (&value) T(std::forward<T>(RHS));
   }
   ErrorOr(const Error &err) : containsError(true) { new (&error) Error(err); }
 
@@ -46,15 +46,15 @@ public:
     }
   }
 
-  ErrorOr &operator=(ErrorOr rhs) {
+  ErrorOr &operator=(ErrorOr RHS) {
     this->~ErrorOr();
 
-    containsError = rhs.containsError;
+    containsError = RHS.containsError;
 
     if (containsError) {
-      new (&error) Error(rhs.error);
+      new (&error) Error(RHS.error);
     } else {
-      new (&value) T(rhs.value);
+      new (&value) T(RHS.value);
     }
 
     return *this;
@@ -106,78 +106,93 @@ std::ostream &operator<<(std::ostream &OS, ErrorOr<T> &E) {
 }
 
 template<typename T>
-ErrorOr<T> operator*(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
-  if (lhs.hasError()) {
-    return lhs;
-  }
+ErrorOr<T> operator*(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  if (LHS.hasError())
+    return LHS;
 
-  if (rhs.hasError()) {
-    return rhs;
-  }
+  if (RHS.hasError())
+    return RHS;
 
-  return *lhs * *rhs;
+  return *LHS * *RHS;
 }
 
 template<typename T>
-ErrorOr<T> operator/(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
-  if (lhs.hasError()) {
-    return lhs;
-  }
+ErrorOr<T> operator/(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  if (LHS.hasError())
+    return LHS;
 
-  if (rhs.hasError()) {
-    return rhs;
-  }
+  if (RHS.hasError())
+    return RHS;
 
-  return *lhs / *rhs;
+  return *LHS / *RHS;
 }
 
 template<typename T>
-ErrorOr<T> operator+(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
-  if (lhs.hasError()) {
-    return lhs;
+ErrorOr<T> operator+(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  if (LHS.hasError()) {
+    return LHS;
   }
 
-  if (rhs.hasError()) {
-    return rhs;
+  if (RHS.hasError()) {
+    return RHS;
   }
 
-  return *lhs + *rhs;
+  return *LHS + *RHS;
 }
 
 template<typename T>
-ErrorOr<T> operator-(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
-  if (lhs.hasError()) {
-    return lhs;
-  }
+ErrorOr<T> operator-(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  if (LHS.hasError())
+    return LHS;
 
-  if (rhs.hasError()) {
-    return rhs;
-  }
+  if (RHS.hasError())
+    return RHS;
 
-  return *lhs - *rhs;
+  return *LHS - *RHS;
 }
 
 template<typename T>
-bool operator==(const ErrorOr<T> &lhs, const T &rhs) {
-  return lhs.hasValue() && *lhs == rhs;
+ErrorOr<T> operator+(const ErrorOr<T> &Val) {
+  return Val;
 }
 
 template<typename T>
-bool operator==(const T &lhs, const ErrorOr<T> &rhs) {
-  return rhs.hasValue() && lhs == *rhs;
+ErrorOr<T> operator-(const ErrorOr<T> &Val) {
+  if (Val.hasError())
+    return Val;
+
+  return -*Val;
 }
 
 template<typename T>
-bool operator==(const ErrorOr<T> &lhs, const ErrorOr<T> &rhs) {
-  if (lhs.hasError()) {
-    return rhs.hasError();
+ErrorOr<T> operator!(const ErrorOr<T> &Val) {
+  if (Val.hasError())
+    return Val;
+
+  return !*Val;
+}
+
+template<typename T>
+bool operator==(const ErrorOr<T> &LHS, const T &RHS) {
+  return LHS.hasValue() && *LHS == RHS;
+}
+
+template<typename T>
+bool operator==(const T &LHS, const ErrorOr<T> &RHS) {
+  return RHS.hasValue() && LHS == *RHS;
+}
+
+template<typename T>
+bool operator==(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  if (LHS.hasError()) {
+    return RHS.hasError();
   }
 
-  if (rhs.hasError()) {
+  if (RHS.hasError()) {
     return false;
   }
 
-  return *lhs == *rhs;
+  return *LHS == *RHS;
 }
 
 } // namespace calc

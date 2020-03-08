@@ -5,7 +5,7 @@ using namespace calc;
 void Token::print(std::ostream &OS) const {
   switch (K) {
   case Token::Number:
-    OS << '<' << Loc.first << ':' << Loc.second << ':' << V << '>';
+    OS << '<' << Loc.first << ':' << Loc.second << ":#" << V << '>';
     return;
   case Token::Unknown:
   case Token::Plus:
@@ -14,7 +14,8 @@ void Token::print(std::ostream &OS) const {
   case Token::Divide:
   case Token::LParen:
   case Token::RParen:
-    OS << '<' << Loc.first << ':' << Loc.second << ':' << K << '>';
+  case Token::Bang:
+    OS << '<' << Loc.first << ':' << Loc.second << ':' << toString(K) << '>';
     return;
   }
   __builtin_unreachable();
@@ -25,7 +26,7 @@ void Token::dump() const {
   std::cout << "\n";
 }
 
-std::ostream &operator<<(std::ostream &OS, const Token &Tok) {
+std::ostream &calc::operator<<(std::ostream &OS, const Token &Tok) {
   Tok.print(OS);
   return OS;
 }
@@ -40,6 +41,7 @@ const char *calc::toString(Token::Kind Kind) {
   case Token::Divide: return "/";
   case Token::LParen: return "(";
   case Token::RParen: return ")";
+  case Token::Bang: return "!";
   }
   __builtin_unreachable();
 }

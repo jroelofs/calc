@@ -20,6 +20,7 @@ public:
     Minus,
     Times,
     Divide,
+    Bang,
   } Kind;
 
   Token() : K(Token::Unknown) {}

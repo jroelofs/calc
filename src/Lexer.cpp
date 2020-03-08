@@ -67,6 +67,7 @@ std::optional<Token> IOSLexer::next() {
     { '/', Token::Divide },
     { '(', Token::LParen },
     { ')', Token::RParen },
+    { '!', Token::Bang },
   };
 
   for (const auto &Match : Matches) {

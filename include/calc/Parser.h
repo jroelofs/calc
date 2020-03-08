@@ -89,11 +89,26 @@ public:
 
   // factor : `number`
   //        | `(` exp `)`
+  //        | `+` factor
+  //        | `-` factor
+  //        | `!` factor
   ErrorOr<Expr> parseFactor() {
     if (accept(Token::LParen)) {
       ErrorOr<Expr> res = parseExpr();
       expect(Token::RParen);
       return res;
+    }
+
+    if (accept(Token::Plus)) {
+      return +parseFactor();
+    }
+
+    if (accept(Token::Minus)) {
+      return -parseFactor();
+    }
+
+    if (accept(Token::Bang)) {
+      return !parseFactor();
     }
 
     return parseNumber();
