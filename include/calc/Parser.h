@@ -18,11 +18,9 @@ public:
   Parser(Lexer &Lexer) : Lexer(Lexer) {}
 
   std::optional<Token> accept(Token::Kind K) {
-    if (std::optional<Token> T = Lexer.peek()) {
-      if (T->K == K) {
+    if (std::optional<Token> T = Lexer.peek())
+      if (T->K == K)
         return Lexer.pop();
-      }
-    }
     return std::nullopt;
   }
 
@@ -36,13 +34,11 @@ public:
   ErrorOr<Expr> parse() {
     ErrorOr<Expr> res = parseExpr();
 
-    if (res.hasError()) {
+    if (res.hasError())
       return res;
-    }
 
-    if (!Lexer.empty()) {
+    if (!Lexer.empty())
       return Error(Lexer.location(), "unexpected trailing characters");
-    }
 
     return res;
   }
@@ -99,17 +95,14 @@ public:
       return res;
     }
 
-    if (accept(Token::Plus)) {
+    if (accept(Token::Plus))
       return +parseFactor();
-    }
 
-    if (accept(Token::Minus)) {
+    if (accept(Token::Minus))
       return -parseFactor();
-    }
 
-    if (accept(Token::Bang)) {
+    if (accept(Token::Bang))
       return !parseFactor();
-    }
 
     return parseNumber();
   }
@@ -117,9 +110,8 @@ public:
   ErrorOr<Expr> parseNumber() {
     ErrorOr<Token> T = expect(Token::Number);
 
-    if (T.hasValue()) {
+    if (T.hasValue())
       return Expr(std::stoi(T->V));
-    }
 
     return T.getError();
   }

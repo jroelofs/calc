@@ -129,13 +129,11 @@ ErrorOr<T> operator/(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
 
 template<typename T>
 ErrorOr<T> operator+(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError()) {
+  if (LHS.hasError())
     return LHS;
-  }
 
-  if (RHS.hasError()) {
+  if (RHS.hasError())
     return RHS;
-  }
 
   return *LHS + *RHS;
 }
@@ -184,13 +182,11 @@ bool operator==(const T &LHS, const ErrorOr<T> &RHS) {
 
 template<typename T>
 bool operator==(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError()) {
+  if (LHS.hasError())
     return RHS.hasError();
-  }
 
-  if (RHS.hasError()) {
+  if (RHS.hasError())
     return false;
-  }
 
   return *LHS == *RHS;
 }
