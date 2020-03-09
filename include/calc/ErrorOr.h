@@ -23,7 +23,7 @@ public:
 };
 
 template <typename T>
-class ErrorOr {
+class [[nodiscard]] ErrorOr {
 public:
   ErrorOr(const T &RHS) : containsError(false) { new (&value) T(RHS); }
   ErrorOr(const ErrorOr<T> &RHS) : containsError(RHS.containsError) {

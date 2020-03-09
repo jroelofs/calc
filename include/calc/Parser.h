@@ -24,7 +24,7 @@ public:
     return std::nullopt;
   }
 
-  [[nodiscard]] ErrorOr<Token> expect(Token::Kind K) {
+  ErrorOr<Token> expect(Token::Kind K) {
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
