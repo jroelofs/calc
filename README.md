@@ -8,8 +8,7 @@ evaluates the resulting expression.
 ```sh
 git clone git@github.com:jroelofs/calc.git
 mkdir build && cd build
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug calc
-cd build
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ../calc
 ninja
 ```
 
@@ -44,3 +43,4 @@ $ ./bin/crepl
 ```sh
 $ ninja check
 ```
+
