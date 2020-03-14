@@ -5,6 +5,8 @@
 
 using namespace calc;
 
+Lexer::~Lexer() {}
+
 std::optional<Token> VectorLexer::peek() {
   if (!Tok.has_value())
     if (Cursor != Toks.end())

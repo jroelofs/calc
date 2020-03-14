@@ -16,6 +16,7 @@ public:
   virtual Token pop() = 0;
   virtual bool empty() const = 0;
   virtual SLoc location() const = 0;
+  virtual ~Lexer();
 };
 
 class VectorLexer : public Lexer {
