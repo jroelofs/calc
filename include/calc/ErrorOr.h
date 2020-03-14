@@ -16,11 +16,15 @@ public:
 
   void print(std::ostream &OS) const;
   void dump() const;
-  friend std::ostream &operator<<(std::ostream &OS, const Error &E);
 
   SLoc Loc;
   std::string Msg;
 };
+
+inline std::ostream &operator<<(std::ostream &OS, const Error &E) {
+  E.print(OS);
+  return OS;
+}
 
 template <typename T>
 class [[nodiscard]] ErrorOr {
