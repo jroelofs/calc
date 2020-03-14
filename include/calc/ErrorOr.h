@@ -105,70 +105,36 @@ std::ostream &operator<<(std::ostream &OS, ErrorOr<T> &E) {
   return OS;
 }
 
-template<typename T>
-ErrorOr<T> operator*(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError())
-    return LHS;
+#define MONADIC_BINOP(op) \
+  template<typename T> \
+  ErrorOr<T> operator op (const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) { \
+    if (LHS.hasError()) \
+      return LHS; \
+    if (RHS.hasError()) \
+      return RHS; \
+    return *LHS op *RHS; \
+  }
 
-  if (RHS.hasError())
-    return RHS;
+// Note: this templated expression eval strategy breaks down when it comes to
+// logical operators like `&&`, since we don't have a way to replicate the short
+// circuiting behavior provided by the built-in operators when defining our own
+// overloads of them. Unfortunate shortcoming of c++ :(
+MONADIC_BINOP(*)
+MONADIC_BINOP(/)
+MONADIC_BINOP(+)
+MONADIC_BINOP(-)
 
-  return *LHS * *RHS;
-}
+#define MONADIC_UNARYOP(op) \
+  template<typename T> \
+  ErrorOr<T> operator op (const ErrorOr<T> &Val) { \
+    if (Val.hasError()) \
+      return Val; \
+    return op *Val; \
+  }
 
-template<typename T>
-ErrorOr<T> operator/(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError())
-    return LHS;
-
-  if (RHS.hasError())
-    return RHS;
-
-  return *LHS / *RHS;
-}
-
-template<typename T>
-ErrorOr<T> operator+(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError())
-    return LHS;
-
-  if (RHS.hasError())
-    return RHS;
-
-  return *LHS + *RHS;
-}
-
-template<typename T>
-ErrorOr<T> operator-(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
-  if (LHS.hasError())
-    return LHS;
-
-  if (RHS.hasError())
-    return RHS;
-
-  return *LHS - *RHS;
-}
-
-template<typename T>
-ErrorOr<T> operator+(const ErrorOr<T> &Val) {
-  return Val;
-}
-
-template<typename T>
-ErrorOr<T> operator-(const ErrorOr<T> &Val) {
-  if (Val.hasError())
-    return Val;
-
-  return -*Val;
-}
-
-template<typename T>
-ErrorOr<T> operator!(const ErrorOr<T> &Val) {
-  if (Val.hasError())
-    return Val;
-
-  return !*Val;
-}
+MONADIC_UNARYOP(+)
+MONADIC_UNARYOP(-)
+MONADIC_UNARYOP(!)
 
 template<typename T>
 bool operator==(const ErrorOr<T> &LHS, const T &RHS) {
@@ -182,6 +148,7 @@ bool operator==(const T &LHS, const ErrorOr<T> &RHS) {
 
 template<typename T>
 bool operator==(const ErrorOr<T> &LHS, const ErrorOr<T> &RHS) {
+  // Note: this is subtly different than the defintion of MONADIC_BINOP
   if (LHS.hasError())
     return RHS.hasError();
 
