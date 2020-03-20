@@ -13,6 +13,9 @@ namespace calc {
 
 class Lexer {
 public:
+  Lexer() {}
+  Lexer &operator=(const Lexer &) = delete;
+  Lexer(const Lexer &) = delete;
   virtual std::optional<Token> peek() = 0;
   virtual Token pop() = 0;
   virtual bool empty() const = 0;
