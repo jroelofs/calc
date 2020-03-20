@@ -33,6 +33,7 @@ public:
   bool empty() const override;
   SLoc location() const override { return std::make_pair(0, 0); }
 
+private:
   std::optional<Token> Tok;
   std::vector<Token> Toks;
   size_t Cursor;
