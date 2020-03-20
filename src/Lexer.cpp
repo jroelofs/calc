@@ -8,9 +8,8 @@ using namespace calc;
 Lexer::~Lexer() {}
 
 std::optional<Token> VectorLexer::peek() {
-  if (!Tok.has_value())
-    if (Cursor != Toks.end())
-      Tok = *Cursor++;
+  if (!Tok.has_value() && Cursor != Toks.size())
+    Tok = Toks[Cursor++];
   
   return *Tok;
 }
@@ -20,7 +19,7 @@ Token VectorLexer::pop() {
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool VectorLexer::empty() const { return Cursor == Toks.end(); }
+bool VectorLexer::empty() const { return Cursor == Toks.size(); }
 
 std::optional<Token> IOSLexer::peek() {
   if (!Tok.has_value()) {

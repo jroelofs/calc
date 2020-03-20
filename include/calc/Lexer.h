@@ -25,10 +25,9 @@ public:
 
 class VectorLexer : public Lexer {
 public:
-  VectorLexer(std::initializer_list<Token> TS) {
-    Toks.insert(Toks.end(), TS.begin(), TS.end());
-    Cursor = Toks.begin();
-  }
+  VectorLexer(std::initializer_list<Token> TS)
+    : Toks{TS.begin(), TS.end()}, Cursor{0}
+  {}
   std::optional<Token> peek() override;
   Token pop() override;
   bool empty() const override;
@@ -36,7 +35,7 @@ public:
 
   std::optional<Token> Tok;
   std::vector<Token> Toks;
-  decltype(Toks.begin()) Cursor;
+  size_t Cursor;
 };
 
 class IOSLexer : public Lexer {
