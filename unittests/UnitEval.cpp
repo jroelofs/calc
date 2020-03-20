@@ -6,34 +6,6 @@ using namespace calc;
 
 static constexpr SLoc NoLoc = SLoc(-1, -1);
 
-TEST(Eval, MockLexer1) {
-  // clang-format off
-  VectorLexer L({
-    Token(NoLoc, Token::Number, "1"),
-    Token(NoLoc, Token::Plus),
-    Token(NoLoc, Token::Number, "2")
-  });
-  // clang-format on
-
-  Parser<int> P(L);
-  EXPECT_EQ(P.parse(), 3);
-}
-
-TEST(Eval, MockLexer2) {
-  // clang-format off
-  VectorLexer L({
-    Token(NoLoc, Token::Number, "1"),
-    Token(NoLoc, Token::Times),
-    Token(NoLoc, Token::Number, "2"),
-    Token(NoLoc, Token::Plus),
-    Token(NoLoc, Token::Number, "3")
-  });
-  // clang-format on
-
-  Parser<int> P(L);
-  EXPECT_EQ(P.parse(), 5);
-}
-
 TEST(Eval, Expressions) {
   // clang-format off
   struct {

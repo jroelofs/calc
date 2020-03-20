@@ -30,6 +30,10 @@ public:
   void print(std::ostream &OS) const;
   void dump() const;
 
+  bool operator==(const Token &Other) const {
+    return Loc == Other.Loc && K == Other.K && V == Other.V;
+  }
+
   SLoc Loc;
   Kind K;
   std::string V;

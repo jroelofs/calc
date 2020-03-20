@@ -44,18 +44,14 @@ std::optional<Token> IOSLexer::next() {
     return std::nullopt;
   }
 
-  char c = IS.peek();
-
   // Skip whitespace
-  while (std::isspace(c)) {
-    IS.get();
-    if (c == '\n') {
+  for (int C = IS.peek(); std::isspace(C) && IS.get(); C = IS.peek()) {
+    if (C == '\n') {
       Line++;
       Col = 0;
     } else {
       Col++;
     }
-    c = IS.peek();
   }
 
   const struct {
@@ -72,23 +68,21 @@ std::optional<Token> IOSLexer::next() {
   };
 
   for (const auto &Match : Matches) {
-    if (c == Match.C) {
+    if (IS.peek() == Match.C) {
       IS.get();
       Col++;
       return Token(location(), Match.Kind);
     }
   }
 
-  if (std::isdigit(c)) {
-    std::stringstream Terminal;
-    while (std::isdigit(c)) {
-      IS.get();
-      Col++;
-      Terminal << c;
-      c = IS.peek();
-    }
-    return Token(location(), Token::Number, Terminal.str());
+  if (!std::isdigit(IS.peek())) {
+    return Token(location(), Token::Unknown);
   }
 
-  return Token(location(), Token::Unknown);
+  std::stringstream Terminal;
+  for (int C = IS.peek(); std::isdigit(C) && IS.get(); C = IS.peek()) {
+    Col++;
+    Terminal << static_cast<char>(C);
+  }
+  return Token(location(), Token::Number, Terminal.str());
 }

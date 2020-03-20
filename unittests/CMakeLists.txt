@@ -24,7 +24,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 
 set(sources
   UnitEval.cpp
-  UnitErrorOr.cpp)
+  UnitErrorOr.cpp
+  UnitLexer.cpp)
 
 add_executable(unittests ${sources})
 
