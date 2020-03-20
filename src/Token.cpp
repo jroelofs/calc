@@ -33,5 +33,9 @@ const char *calc::toString(Token::Kind Kind) {
   case Token::RParen: return ")";
   case Token::Bang: return "!";
   }
+#if !defined(NDEBUG) && (defined(__GNUC__) || defined(__clang__))
   __builtin_unreachable();
+#else
+  return "<unknown>";
+#endif
 }
