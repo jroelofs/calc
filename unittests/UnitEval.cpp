@@ -62,9 +62,7 @@ TEST(Eval, Expressions) {
     IOSLexer L(SS);
     Parser<int> P(L);
     ErrorOr<int> Res = P.parse();
-    if (Res.hasError()) {
-      EXPECT_TRUE(false) << Res.getError();
-    }
+    EXPECT_FALSE(Res.hasError()) << Res.getError();
     EXPECT_EQ(Res, v.expected) << v.input;
   }
 }
