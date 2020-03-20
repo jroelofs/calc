@@ -29,7 +29,7 @@ public:
   std::optional<Token> peek() override;
   Token pop() override;
   bool empty() const override;
-  virtual SLoc location() const override { return std::make_pair(0, 0); }
+  SLoc location() const override { return std::make_pair(0, 0); }
 
   std::optional<Token> Tok;
   std::vector<Token> Toks;
@@ -43,7 +43,7 @@ public:
   std::optional<Token> peek() override;
   Token pop() override;
   bool empty() const override;
-  virtual SLoc location() const override;
+  SLoc location() const override;
 
 protected:
   std::optional<Token> next();
