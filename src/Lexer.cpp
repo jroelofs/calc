@@ -67,6 +67,10 @@ std::optional<Token> IOSLexer::next() {
     { '!', Token::Bang },
   };
 
+  static_assert(sizeof(Matches) / sizeof(Matches[0]) ==
+                    Token::LAST - Token::FIRST,
+                "unhandled token?");
+
   for (const auto &Match : Matches) {
     if (IS.peek() == Match.C) {
       IS.get();

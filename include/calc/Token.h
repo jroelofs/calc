@@ -21,6 +21,8 @@ public:
     Times,
     Divide,
     Bang,
+    LAST = Bang,
+    FIRST = Number,
   } Kind;
 
   Token() : K(Token::Unknown) {}
