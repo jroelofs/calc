@@ -3,6 +3,7 @@
 
 #include "calc/Token.h"
 
+#include <cassert>
 #include <initializer_list>
 #include <iostream>
 #include <optional>

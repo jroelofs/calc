@@ -2,6 +2,7 @@
 #define CALC_ERROROR_H
 
 #include <string>
+#include <cassert>
 
 namespace calc {
 
