@@ -32,55 +32,55 @@ public:
   }
 
   ErrorOr<Expr> parse() {
-    ErrorOr<Expr> res = parseExpr();
+    ErrorOr<Expr> E = parseExpr();
 
-    if (res.hasError())
-      return res;
+    if (E.hasError())
+      return E;
 
     if (!Lexer.empty())
       return Error(Lexer.location(), "unexpected trailing characters");
 
-    return res;
+    return E;
   }
 
   // exp : term
   //     | exp `+` term
   //     | exp `-` term
   ErrorOr<Expr> parseExpr() {
-    ErrorOr<Expr> res = parseTerm();
+    ErrorOr<Expr> E = parseTerm();
 
-    while (res) {
+    while (E) {
       if (accept(Token::Plus)) {
-        res = res + parseTerm();
+        E = E + parseTerm();
       } else if (accept(Token::Minus)) {
-        res = res - parseTerm();
+        E = E - parseTerm();
       } else {
         break;
       }
     }
 
-    return res;
+    return E;
   }
 
   // term : factor
   //      | factor `*` term
   //      | factor `/` term
   ErrorOr<Expr> parseTerm() {
-    ErrorOr<Expr> res = parseFactor();
+    ErrorOr<Expr> E = parseFactor();
 
-    while (res) {
+    while (E) {
       if (accept(Token::Times)) {
-        res = res * parseFactor();
+        E = E * parseFactor();
       } else if (accept(Token::Divide)) {
         // Clients can deal with potential div-by-0 here by supplying a class to
         // instantiate `Expr` as that does the appropriate checking.
-        res = res / parseFactor();
+        E = E / parseFactor();
       } else {
         break;
       }
     }
 
-    return res;
+    return E;
   }
 
   // factor : `number`
@@ -90,11 +90,11 @@ public:
   //        | `!` factor
   ErrorOr<Expr> parseFactor() {
     if (accept(Token::LParen)) {
-      ErrorOr<Expr> res = parseExpr();
+      ErrorOr<Expr> E = parseExpr();
       ErrorOr<Token> paren = expect(Token::RParen);
       if (paren.hasError())
         return paren.getError();
-      return res;
+      return E;
     }
 
     if (accept(Token::Plus))
