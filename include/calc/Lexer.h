@@ -48,11 +48,11 @@ private:
   size_t Cursor;
 };
 
-class IOSLexer : public Lexer {
+class StreamLexer : public Lexer {
 public:
-  IOSLexer(std::istream &IS) noexcept : Tok(), IS(IS), Line(0), Col(0) {}
-  IOSLexer(const IOSLexer &) = delete;
-  IOSLexer &operator=(const IOSLexer &) = delete;
+  StreamLexer(std::istream &IS) noexcept : Tok(), IS(IS), Line(0), Col(0) {}
+  StreamLexer(const StreamLexer &) = delete;
+  StreamLexer &operator=(const StreamLexer &) = delete;
 
 protected:
   std::optional<Token> doPeek() override;

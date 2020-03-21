@@ -60,7 +60,7 @@ class LexerFixture : public testing::TestWithParam<LexerTestParam> {};
 TEST_P(LexerFixture, Strings) {
   const LexerTestParam &V = GetParam();
   std::stringstream SS(V.Input);
-  IOSLexer L(SS);
+  StreamLexer L(SS);
   for (auto I = V.Expected.begin(), E = V.Expected.end(); I != E; ++I, L.pop()) {
     EXPECT_FALSE(L.empty());
     EXPECT_TRUE(L.peek().has_value());

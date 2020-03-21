@@ -9,7 +9,7 @@ using namespace calc;
 class EvalSuccessFixture : public ::testing::TestWithParam<std::tuple<const char *, int>> {};
 TEST_P(EvalSuccessFixture, Exprs) {
   std::stringstream SS(std::get<0>(GetParam()));
-  IOSLexer L(SS);
+  StreamLexer L(SS);
   Parser<int> P(L);
   ErrorOr<int> Res = P.parse();
   EXPECT_FALSE(Res.hasError()) << Res.getError();
@@ -37,7 +37,7 @@ INSTANTIATE_TEST_SUITE_P(EvalTests, EvalSuccessFixture,
 class EvalFailFixture : public ::testing::TestWithParam<std::tuple<const char *, const char *>> {};
 TEST_P(EvalFailFixture, Exprs) {
   std::stringstream SS(std::get<0>(GetParam()));
-  IOSLexer L(SS);
+  StreamLexer L(SS);
   Parser<int> P(L);
   ErrorOr<int> Res = P.parse();
   EXPECT_TRUE(Res.hasError()) << std::get<0>(GetParam());
@@ -57,7 +57,7 @@ INSTANTIATE_TEST_SUITE_P(EvalTests, EvalFailFixture,
 
 TEST(Eval, Floats) {
   std::stringstream SS("3/2");
-  IOSLexer L(SS);
+  StreamLexer L(SS);
   Parser<float> P(L);
   EXPECT_EQ(P.parse(), 1.5f);
 }

@@ -21,25 +21,25 @@ Token VectorLexer::doPop() {
 
 bool VectorLexer::isEmpty() const { return Cursor == Toks.size(); }
 
-std::optional<Token> IOSLexer::doPeek() {
+std::optional<Token> StreamLexer::doPeek() {
   if (!Tok.has_value()) {
     Tok = next();
   }
   return Tok;
 }
 
-Token IOSLexer::doPop() {
+Token StreamLexer::doPop() {
   assert(Tok.has_value());
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool IOSLexer::isEmpty() const {
+bool StreamLexer::isEmpty() const {
   return IS.eof();
 }
 
-SLoc IOSLexer::getLocation() const { return std::make_pair(Line, Col); }
+SLoc StreamLexer::getLocation() const { return std::make_pair(Line, Col); }
 
-std::optional<Token> IOSLexer::next() {
+std::optional<Token> StreamLexer::next() {
   if (IS.eof()) {
     return std::nullopt;
   }

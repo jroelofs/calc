@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         return 0;
 
       std::stringstream SS(line);
-      IOSLexer L(SS);
+      StreamLexer L(SS);
       evaluate("  ", L);
     } while (true);
   } else if (argc == 2) {
@@ -53,14 +53,14 @@ int main(int argc, char **argv) {
 
     // Input via pipe
     if (std::string("-") == argv[1]) {
-      IOSLexer L(std::cin);
+      StreamLexer L(std::cin);
       evaluate("", L);
       return 0;
     }
 
     // Input via command-line argument
     std::stringstream SS(argv[1]);
-    IOSLexer L(SS);
+    StreamLexer L(SS);
     evaluate(std::string(argv[1]) + "\n", L);
     return 0;
   }
