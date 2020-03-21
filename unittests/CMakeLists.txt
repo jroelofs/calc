@@ -29,6 +29,13 @@ set(sources
 
 add_executable(unittests ${sources})
 
-target_link_libraries(unittests
+set(dependencies
   gtest_main
   calc)
+
+if(COVERAGE)
+  target_compile_options(unittests PRIVATE --coverage)
+  target_link_libraries(unittests PRIVATE ${dependencies} --coverage)
+else()
+  target_link_libraries(unittests PRIVATE ${dependencies})
+endif()
