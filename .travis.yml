@@ -1,0 +1,16 @@
+dist: xenial
+sudo: false
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-9
+
+script:
+  - export CC=gcc-9
+  - export CXX=g++-9
+  - cmake . -DCMAKE_BUILD_TYPE=Debug
+  - cmake --build . -- check -j2
