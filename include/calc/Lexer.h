@@ -50,7 +50,7 @@ private:
 
 class IOSLexer : public Lexer {
 public:
-  IOSLexer(std::istream &IS) noexcept : IS(IS), Tok(), Line(0), Col(0) {}
+  IOSLexer(std::istream &IS) noexcept : Tok(), IS(IS), Line(0), Col(0) {}
   IOSLexer(const IOSLexer &) = delete;
   IOSLexer &operator=(const IOSLexer &) = delete;
 
