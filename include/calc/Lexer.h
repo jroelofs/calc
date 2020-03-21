@@ -42,6 +42,8 @@ private:
 class IOSLexer : public Lexer {
 public:
   IOSLexer(std::istream &IS) noexcept : IS(IS), Tok(), Line(0), Col(0) {}
+  IOSLexer(const IOSLexer &) = delete;
+  IOSLexer &operator=(const IOSLexer &) = delete;
 
   [[nodiscard]] std::optional<Token> peek() override;
   Token pop() override;
