@@ -112,8 +112,15 @@ public:
   ErrorOr<Expr> parseNumber() {
     ErrorOr<Token> T = expect(Token::Number);
 
-    if (T.hasValue())
-      return Expr(std::stoi(T->V));
+    if (T.hasValue()) {
+      try {
+        return Expr(std::stoi(T->V));
+      } catch (std::invalid_argument) {
+        return Error(T->Loc, "invalid number");
+      } catch (std::out_of_range) {
+        return Error(T->Loc, "number out of range");
+      }
+    }
 
     return T.getError();
   }
