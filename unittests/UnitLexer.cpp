@@ -34,35 +34,56 @@ TEST(Lexer, MockLexer2) {
   EXPECT_EQ(P.parse(), 5);
 }
 
-TEST(Lexer, IOSLexer) {
-  // clang-format off
-  struct {
-    const char *input;
-    std::vector<Token> expected;
-  } vec[] = {
-    {"1", {
-      Token(NoLoc, Token::Number, "1")
-    }},
-    {"(1)", {
-      Token(NoLoc, Token::LParen),
-      Token(NoLoc, Token::Number, "1"),
-      Token(NoLoc, Token::RParen)
-    }},
-    {"1 + 1 ", {
-      Token(NoLoc, Token::Number, "1"),
-      Token(NoLoc, Token::Plus),
-      Token(NoLoc, Token::Number, "1")
-    }},
-  };
-  // clang-format on
+TEST(Lexer, MockLexer3) {
+  VectorLexer L{};
 
-  for (const auto &v : vec) {
-    std::stringstream SS(v.input);
-    IOSLexer L(SS);
-    for (auto I = v.expected.begin(), E = v.expected.end(); I != E; ++I, L.pop()) {
-      EXPECT_FALSE(L.empty());
-      EXPECT_TRUE(L.peek().has_value());
-      EXPECT_EQ(*L.peek(), *I);
-    }
+  Parser<int> P(L);
+  ErrorOr<int> E = P.parse();
+  ASSERT_TRUE(E.hasError()) << *E;
+  EXPECT_EQ(E.getError().Msg, "expected number");
+}
+
+struct LexerTestParam {
+  const char *Input;
+  std::vector<Token> Expected;
+};
+std::ostream &operator<<(std::ostream &OS, const LexerTestParam &P) {
+  OS << "Input: '" << P.Input << "' Expected:";
+  for (const Token &T : P.Expected) {
+    OS << " " << T;
+  }
+  return OS;
+}
+
+class LexerFixture : public testing::TestWithParam<LexerTestParam> {};
+
+TEST_P(LexerFixture, Strings) {
+  const LexerTestParam &V = GetParam();
+  std::stringstream SS(V.Input);
+  IOSLexer L(SS);
+  for (auto I = V.Expected.begin(), E = V.Expected.end(); I != E; ++I, L.pop()) {
+    EXPECT_FALSE(L.empty());
+    EXPECT_TRUE(L.peek().has_value());
+    EXPECT_EQ(*L.peek(), *I);
   }
 }
+
+LexerTestParam LexerTests[] = {
+  {"", {}},
+  {"1", {
+    Token(NoLoc, Token::Number, "1")
+  }},
+  {"(1)", {
+    Token(NoLoc, Token::LParen),
+    Token(NoLoc, Token::Number, "1"),
+    Token(NoLoc, Token::RParen)
+  }},
+  {"1 + 1 ", {
+    Token(NoLoc, Token::Number, "1"),
+    Token(NoLoc, Token::Plus),
+    Token(NoLoc, Token::Number, "1")
+  }},
+};
+INSTANTIATE_TEST_SUITE_P(LexerTests,
+  LexerFixture,
+  testing::ValuesIn(LexerTests));

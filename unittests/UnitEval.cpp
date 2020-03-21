@@ -52,6 +52,7 @@ TEST(Eval, ParseErrors) {
     const char *input;
     const char *message;
   } vec[] = {
+    { "", "expected number" },
     { "a", "expected number" },
     { "1 + a", "expected number" },
     { "(1))", "unexpected trailing characters" },

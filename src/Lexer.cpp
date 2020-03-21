@@ -11,7 +11,7 @@ std::optional<Token> VectorLexer::doPeek() {
   if (!Tok.has_value() && Cursor != Toks.size())
     Tok = Toks[Cursor++];
   
-  return *Tok;
+  return Tok;
 }
 
 Token VectorLexer::doPop() {
