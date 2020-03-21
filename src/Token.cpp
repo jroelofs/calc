@@ -3,22 +3,12 @@
 using namespace calc;
 
 void Token::print(std::ostream &OS) const {
-  switch (K) {
-  case Token::Number:
+  if (K == Token::Number) {
     OS << '<' << Loc.first << ':' << Loc.second << ":#" << V << '>';
     return;
-  case Token::Unknown:
-  case Token::Plus:
-  case Token::Minus:
-  case Token::Times:
-  case Token::Divide:
-  case Token::LParen:
-  case Token::RParen:
-  case Token::Bang:
-    OS << '<' << Loc.first << ':' << Loc.second << ':' << toString(K) << '>';
-    return;
   }
-  __builtin_unreachable();
+
+  OS << '<' << Loc.first << ':' << Loc.second << ':' << toString(K) << '>';
 }
 
 void Token::dump() const {
@@ -43,5 +33,9 @@ const char *calc::toString(Token::Kind Kind) {
   case Token::RParen: return ")";
   case Token::Bang: return "!";
   }
+#if !defined(NDEBUG) && (defined(__GNUC__) || defined(__clang__))
   __builtin_unreachable();
+#else
+  return "<unknown>";
+#endif
 }

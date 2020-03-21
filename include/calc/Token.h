@@ -21,14 +21,20 @@ public:
     Times,
     Divide,
     Bang,
+    LAST = Bang,
+    FIRST = Number,
   } Kind;
 
-  Token() : K(Token::Unknown) {}
-  Token(SLoc Loc, Kind K) : K(K) {}
-  Token(SLoc Loc, Kind K, std::string V) : K(K), V(V) {}
+  Token() noexcept : K(Token::Unknown) {}
+  Token(SLoc Loc, Kind K) noexcept : K(K) {}
+  Token(SLoc Loc, Kind K, std::string V) noexcept : K(K), V(V) {}
 
   void print(std::ostream &OS) const;
   void dump() const;
+
+  bool operator==(const Token &Other) const {
+    return Loc == Other.Loc && K == Other.K && V == Other.V;
+  }
 
   SLoc Loc;
   Kind K;

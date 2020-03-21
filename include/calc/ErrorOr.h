@@ -2,6 +2,7 @@
 #define CALC_ERROROR_H
 
 #include <string>
+#include <cassert>
 
 namespace calc {
 
@@ -9,10 +10,10 @@ using SLoc = std::pair<int, int>;
 
 class Error {
 public:
-  Error(SLoc Loc, const std::string &Msg) : Loc(Loc), Msg(Msg) {}
-  Error(SLoc Loc, std::string &&Msg) : Loc(Loc), Msg(std::move(Msg)) {}
-  Error(const Error &E) : Loc(E.Loc), Msg(E.Msg) {}
-  Error(Error &&E) : Loc(E.Loc), Msg(std::move(E.Msg)) {}
+  Error(SLoc Loc, const std::string &Msg) noexcept : Loc(Loc), Msg(Msg) {}
+  Error(SLoc Loc, std::string &&Msg) noexcept : Loc(Loc), Msg(std::move(Msg)) {}
+  Error(const Error &E) noexcept : Loc(E.Loc), Msg(E.Msg) {}
+  Error(Error &&E) noexcept : Loc(E.Loc), Msg(std::move(E.Msg)) {}
 
   void print(std::ostream &OS) const;
   void dump() const;
@@ -29,8 +30,8 @@ inline std::ostream &operator<<(std::ostream &OS, const Error &E) {
 template <typename T>
 class [[nodiscard]] ErrorOr {
 public:
-  ErrorOr(const T &RHS) : containsError(false) { new (&value) T(RHS); }
-  ErrorOr(const ErrorOr<T> &RHS) : containsError(RHS.containsError) {
+  ErrorOr(const T &RHS) noexcept : containsError(false) { new (&value) T(RHS); }
+  ErrorOr(const ErrorOr<T> &RHS) noexcept : containsError(RHS.containsError) {
     if (containsError) {
       new (&error) Error(RHS.error);
     } else {

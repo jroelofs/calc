@@ -15,7 +15,9 @@ namespace calc {
 // overloads, that constructs an AST.
 template <typename Expr> class Parser {
 public:
-  Parser(Lexer &Lexer) : Lexer(Lexer) {}
+  Parser(Lexer &Lexer) noexcept : Lexer(Lexer) {}
+  Parser(const Parser &) = delete;
+  Parser &operator=(const Parser &) = delete;
 
   std::optional<Token> accept(Token::Kind K) {
     if (std::optional<Token> T = Lexer.peek())
@@ -32,55 +34,55 @@ public:
   }
 
   ErrorOr<Expr> parse() {
-    ErrorOr<Expr> res = parseExpr();
+    ErrorOr<Expr> E = parseExpr();
 
-    if (res.hasError())
-      return res;
+    if (E.hasError())
+      return E;
 
     if (!Lexer.empty())
       return Error(Lexer.location(), "unexpected trailing characters");
 
-    return res;
+    return E;
   }
 
   // exp : term
   //     | exp `+` term
   //     | exp `-` term
   ErrorOr<Expr> parseExpr() {
-    ErrorOr<Expr> res = parseTerm();
+    ErrorOr<Expr> E = parseTerm();
 
-    while (res) {
+    while (E) {
       if (accept(Token::Plus)) {
-        res = res + parseTerm();
+        E = E + parseTerm();
       } else if (accept(Token::Minus)) {
-        res = res - parseTerm();
+        E = E - parseTerm();
       } else {
         break;
       }
     }
 
-    return res;
+    return E;
   }
 
   // term : factor
   //      | factor `*` term
   //      | factor `/` term
   ErrorOr<Expr> parseTerm() {
-    ErrorOr<Expr> res = parseFactor();
+    ErrorOr<Expr> E = parseFactor();
 
-    while (res) {
+    while (E) {
       if (accept(Token::Times)) {
-        res = res * parseFactor();
+        E = E * parseFactor();
       } else if (accept(Token::Divide)) {
         // Clients can deal with potential div-by-0 here by supplying a class to
         // instantiate `Expr` as that does the appropriate checking.
-        res = res / parseFactor();
+        E = E / parseFactor();
       } else {
         break;
       }
     }
 
-    return res;
+    return E;
   }
 
   // factor : `number`
@@ -90,11 +92,11 @@ public:
   //        | `!` factor
   ErrorOr<Expr> parseFactor() {
     if (accept(Token::LParen)) {
-      ErrorOr<Expr> res = parseExpr();
+      ErrorOr<Expr> E = parseExpr();
       ErrorOr<Token> paren = expect(Token::RParen);
       if (paren.hasError())
         return paren.getError();
-      return res;
+      return E;
     }
 
     if (accept(Token::Plus))
@@ -112,8 +114,15 @@ public:
   ErrorOr<Expr> parseNumber() {
     ErrorOr<Token> T = expect(Token::Number);
 
-    if (T.hasValue())
-      return Expr(std::stoi(T->V));
+    if (T.hasValue()) {
+      try {
+        return Expr(std::stoi(T->V));
+      } catch (std::invalid_argument) {
+        return Error(T->Loc, "invalid number");
+      } catch (std::out_of_range) {
+        return Error(T->Loc, "number out of range");
+      }
+    }
 
     return T.getError();
   }

@@ -5,58 +5,53 @@
 
 using namespace calc;
 
-Lexer::~Lexer() {}
+Lexer::~Lexer() = default;
 
-std::optional<Token> VectorLexer::peek() {
-  if (!Tok.has_value())
-    if (Cursor != Toks.end())
-      Tok = *Cursor++;
+std::optional<Token> VectorLexer::doPeek() {
+  if (!Tok.has_value() && Cursor != Toks.size())
+    Tok = Toks[Cursor++];
   
-  return *Tok;
+  return Tok;
 }
 
-Token VectorLexer::pop() {
+Token VectorLexer::doPop() {
   assert(Tok.has_value());
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool VectorLexer::empty() const { return Cursor == Toks.end(); }
+bool VectorLexer::isEmpty() const { return Cursor == Toks.size(); }
 
-std::optional<Token> IOSLexer::peek() {
+std::optional<Token> StreamLexer::doPeek() {
   if (!Tok.has_value()) {
     Tok = next();
   }
   return Tok;
 }
 
-Token IOSLexer::pop() {
+Token StreamLexer::doPop() {
   assert(Tok.has_value());
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool IOSLexer::empty() const {
+bool StreamLexer::isEmpty() const {
   return IS.eof();
 }
 
-SLoc IOSLexer::location() const { return std::make_pair(Line, Col); }
+SLoc StreamLexer::getLocation() const { return std::make_pair(Line, Col); }
 
-std::optional<Token> IOSLexer::next() {
+std::optional<Token> StreamLexer::next() {
   if (IS.eof()) {
     return std::nullopt;
   }
 
-  char c = IS.peek();
-
   // Skip whitespace
-  while (std::isspace(c)) {
-    IS.get();
-    if (c == '\n') {
+  for (int C = IS.peek(); std::isspace(C) && IS.get(); C = IS.peek()) {
+    if (C == '\n') {
       Line++;
       Col = 0;
     } else {
       Col++;
     }
-    c = IS.peek();
   }
 
   const struct {
@@ -72,21 +67,23 @@ std::optional<Token> IOSLexer::next() {
     { '!', Token::Bang },
   };
 
+  static_assert(sizeof(Matches) / sizeof(Matches[0]) ==
+                    Token::LAST - Token::FIRST,
+                "unhandled token?");
+
   for (const auto &Match : Matches) {
-    if (c == Match.C) {
+    if (IS.peek() == Match.C) {
       IS.get();
       Col++;
       return Token(location(), Match.Kind);
     }
   }
 
-  if (std::isdigit(c)) {
+  if (std::isdigit(IS.peek())) {
     std::stringstream Terminal;
-    while (std::isdigit(c)) {
-      IS.get();
+    for (int C = IS.peek(); std::isdigit(C) && IS.get(); C = IS.peek()) {
       Col++;
-      Terminal << c;
-      c = IS.peek();
+      Terminal << static_cast<char>(C);
     }
     return Token(location(), Token::Number, Terminal.str());
   }
