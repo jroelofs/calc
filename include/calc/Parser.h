@@ -16,6 +16,8 @@ namespace calc {
 template <typename Expr> class Parser {
 public:
   Parser(Lexer &Lexer) noexcept : Lexer(Lexer) {}
+  Parser(const Parser &) = delete;
+  Parser &operator=(const Parser &) = delete;
 
   std::optional<Token> accept(Token::Kind K) {
     if (std::optional<Token> T = Lexer.peek())
