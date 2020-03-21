@@ -7,37 +7,37 @@ using namespace calc;
 
 Lexer::~Lexer() = default;
 
-std::optional<Token> VectorLexer::peek() {
+std::optional<Token> VectorLexer::doPeek() {
   if (!Tok.has_value() && Cursor != Toks.size())
     Tok = Toks[Cursor++];
   
   return *Tok;
 }
 
-Token VectorLexer::pop() {
+Token VectorLexer::doPop() {
   assert(Tok.has_value());
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool VectorLexer::empty() const { return Cursor == Toks.size(); }
+bool VectorLexer::isEmpty() const { return Cursor == Toks.size(); }
 
-std::optional<Token> IOSLexer::peek() {
+std::optional<Token> IOSLexer::doPeek() {
   if (!Tok.has_value()) {
     Tok = next();
   }
   return Tok;
 }
 
-Token IOSLexer::pop() {
+Token IOSLexer::doPop() {
   assert(Tok.has_value());
   return *std::exchange(Tok, std::nullopt);
 }
 
-bool IOSLexer::empty() const {
+bool IOSLexer::isEmpty() const {
   return IS.eof();
 }
 
-SLoc IOSLexer::location() const { return std::make_pair(Line, Col); }
+SLoc IOSLexer::getLocation() const { return std::make_pair(Line, Col); }
 
 std::optional<Token> IOSLexer::next() {
   if (IS.eof()) {
