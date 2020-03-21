@@ -79,14 +79,14 @@ std::optional<Token> IOSLexer::next() {
     }
   }
 
-  if (!std::isdigit(IS.peek())) {
-    return Token(location(), Token::Unknown);
+  if (std::isdigit(IS.peek())) {
+    std::stringstream Terminal;
+    for (int C = IS.peek(); std::isdigit(C) && IS.get(); C = IS.peek()) {
+      Col++;
+      Terminal << static_cast<char>(C);
+    }
+    return Token(location(), Token::Number, Terminal.str());
   }
 
-  std::stringstream Terminal;
-  for (int C = IS.peek(); std::isdigit(C) && IS.get(); C = IS.peek()) {
-    Col++;
-    Terminal << static_cast<char>(C);
-  }
-  return Token(location(), Token::Number, Terminal.str());
+  return Token(location(), Token::Unknown);
 }
