@@ -65,7 +65,8 @@ protected:
 private:
   std::optional<Token> Tok;
   std::istream &IS;
-  int Line, Col;
+  int Line;
+  int Col;
 };
 
 } // namespace calc
