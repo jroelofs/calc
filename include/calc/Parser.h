@@ -15,14 +15,14 @@ namespace calc {
 // overloads, that constructs an AST.
 template <typename Expr> class Parser {
 public:
-  Parser(Lexer &Lexer) noexcept : Lexer(Lexer) {}
+  Parser(Lexer &L) noexcept : Lex(L) {}
   Parser(const Parser &) = delete;
   Parser &operator=(const Parser &) = delete;
 
   std::optional<Token> accept(Token::Kind K) {
-    if (std::optional<Token> T = Lexer.peek())
+    if (std::optional<Token> T = Lex.peek())
       if (T->K == K)
-        return Lexer.pop();
+        return Lex.pop();
     return std::nullopt;
   }
 
@@ -30,7 +30,7 @@ public:
     if (std::optional<Token> T = accept(K)) {
       return *T;
     }
-    return Error(Lexer.location(), std::string("expected ") + toString(K));
+    return Error(Lex.location(), std::string("expected ") + toString(K));
   }
 
   ErrorOr<Expr> parse() {
@@ -39,8 +39,8 @@ public:
     if (E.hasError())
       return E;
 
-    if (!Lexer.empty())
-      return Error(Lexer.location(), "unexpected trailing characters");
+    if (!Lex.empty())
+      return Error(Lex.location(), "unexpected trailing characters");
 
     return E;
   }
@@ -128,7 +128,7 @@ public:
   }
 
 private:
-  Lexer &Lexer;
+  Lexer &Lex;
 };
 
 } // namespace calc
