@@ -25,7 +25,7 @@ public:
 
 class VectorLexer : public Lexer {
 public:
-  VectorLexer(std::initializer_list<Token> TS)
+  VectorLexer(std::initializer_list<Token> TS) noexcept
     : Toks{TS.begin(), TS.end()}, Cursor{0}
   {}
   [[nodiscard]] std::optional<Token> peek() override;
@@ -41,7 +41,7 @@ private:
 
 class IOSLexer : public Lexer {
 public:
-  IOSLexer(std::istream &IS) : IS(IS), Tok(), Line(0), Col(0) {}
+  IOSLexer(std::istream &IS) noexcept : IS(IS), Tok(), Line(0), Col(0) {}
 
   [[nodiscard]] std::optional<Token> peek() override;
   Token pop() override;

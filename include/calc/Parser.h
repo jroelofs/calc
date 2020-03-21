@@ -15,7 +15,7 @@ namespace calc {
 // overloads, that constructs an AST.
 template <typename Expr> class Parser {
 public:
-  Parser(Lexer &Lexer) : Lexer(Lexer) {}
+  Parser(Lexer &Lexer) noexcept : Lexer(Lexer) {}
 
   std::optional<Token> accept(Token::Kind K) {
     if (std::optional<Token> T = Lexer.peek())
