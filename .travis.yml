@@ -6,23 +6,21 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
-        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
-      - clang-9
+      - g++-9
 
 before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - export CC=clang-9
-  - export CXX=clang-9
+  - export CC=gcc-9
+  - export CXX=g++-9
   - cmake --version
   - $CC --version
   - $CXX --version
-  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-fprofile-instr-generate -fcoverage-mapping" -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
   - cmake --build . -- -j2
-  - LLVM_PROFILE_FILE="unittests.profraw" ./bin/unittests
+  - ./bin/unittests
 
 after_success:
   - ls -alh
