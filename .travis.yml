@@ -15,7 +15,7 @@ before_install:
 script:
   - export CC=gcc-9
   - export CXX=g++-9
-  - cmake . -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=1
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
   - cmake --build . -- -j2
   - ./bin/unittests
 

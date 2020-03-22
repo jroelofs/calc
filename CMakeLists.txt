@@ -12,12 +12,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
+if(COVERAGE)
+  add_link_options(
+    -fprofile-instr-generate
+    -fcoverage-mapping)
+  add_compile_options(
+    -fprofile-instr-generate
+    -fcoverage-mapping)
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_subdirectory(src)
 add_subdirectory(tools)
 
 if(FUZZER)
+  add_compile_options(-fsanitize=undefined,address,fuzzer)
+  add_link_options(-fsanitize=undefined,address,fuzzer)
   add_subdirectory(fuzzer)
 endif()
 

@@ -28,14 +28,6 @@ set(sources
   UnitLexer.cpp)
 
 add_executable(unittests ${sources})
-
-set(dependencies
+target_link_libraries(unittests
   gtest_main
   calc)
-
-if(COVERAGE)
-  target_compile_options(unittests PRIVATE --coverage)
-  target_link_libraries(unittests PRIVATE ${dependencies} --coverage)
-else()
-  target_link_libraries(unittests PRIVATE ${dependencies})
-endif()
