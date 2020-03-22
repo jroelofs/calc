@@ -6,13 +6,17 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
+        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+    packages:
+      - clang-9
 
 before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - export CC=clang-7
-  - export CXX=clang-7
+  - export CC=clang-9
+  - export CXX=clang-9
   - cmake --version
   - $CC --version
   - $CXX --version
