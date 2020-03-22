@@ -1,0 +1,23 @@
+dist: xenial
+sudo: false
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-9
+
+before_install:
+  - pip install --user cpp-coveralls
+
+script:
+  - export CC=gcc-9
+  - export CXX=g++-9
+  - cmake . -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=1
+  - cmake --build . -- -j2
+  - ./bin/unittests
+
+after_success:
+  - coveralls --root - . -E ".*gtest.*" -E ".*CMakeFiles.*"
