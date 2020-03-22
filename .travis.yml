@@ -8,7 +8,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-9
-      - gcov
+      - lcov
 
 before_install:
   - pip install --user cpp-coveralls
@@ -20,12 +20,12 @@ script:
   - $CC --version
   - $CXX --version
   - gcov --version
-  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs -ftest-coverage"
   - cmake --build . -- -j2 VERBOSE=1
   - ./bin/unittests
 
 after_success:
   - ls -alh
-  - gcov ./src/*.cpp
+  - lcov --directory . --capture --output-file coverage.lcov
   - coveralls --root - . -E ".*gtest.*" -E ".*CMakeFiles.*"
   - ls -alh
