@@ -23,4 +23,6 @@ script:
   - ./bin/unittests
 
 after_success:
+  - ls -alh
   - coveralls --root - . -E ".*gtest.*" -E ".*CMakeFiles.*"
+  - ls -alh
