@@ -13,9 +13,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 if(COVERAGE)
-  add_link_options(
-    -fprofile-instr-generate
-    -fcoverage-mapping)
   add_compile_options(
     -fprofile-instr-generate
     -fcoverage-mapping)
