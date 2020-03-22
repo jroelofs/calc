@@ -6,21 +6,19 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-    packages:
-      - g++-9
 
 before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - export CC=gcc-9
-  - export CXX=g++-9
+  - export CC=clang-7
+  - export CXX=clang-7
   - cmake --version
   - $CC --version
   - $CXX --version
-  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=--coverage -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_LINKER_FLAGS=--coverage
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-fprofile-instr-generate -fcoverage-mapping" -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
   - cmake --build . -- -j2
-  - ./bin/unittests
+  - LLVM_PROFILE_FILE="unittests.profraw" ./bin/unittests
 
 after_success:
   - ls -alh
