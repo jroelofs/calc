@@ -18,8 +18,8 @@ script:
   - cmake --version
   - $CC --version
   - $CXX --version
-  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov"
-  - cmake --build . -- -j2
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+  - cmake --build . -- -j2 VERBOSE=1
   - ./bin/unittests
 
 after_success:
