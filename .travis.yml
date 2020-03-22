@@ -18,7 +18,7 @@ script:
   - cmake --version
   - $CC --version
   - $CXX --version
-  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=-fprofile-generate -DCMAKE_CXX_FLAGS=-fprofile-generate
+  - cmake . -DCOVERAGE=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=--coverage -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_LINKER_FLAGS=--coverage
   - cmake --build . -- -j2
   - ./bin/unittests
 
