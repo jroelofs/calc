@@ -31,7 +31,8 @@ INSTANTIATE_TEST_SUITE_P(EvalTests, EvalSuccessFixture,
     std::make_tuple("1+-1", 0),
     std::make_tuple("!!42", 1),
     std::make_tuple("-!+1", 0),
-    std::make_tuple("13---+-7", 20)
+    std::make_tuple("13---+-7", 20),
+    std::make_tuple("4/2", 2)
   ));
 
 class EvalFailFixture : public ::testing::TestWithParam<std::tuple<const char *, const char *>> {};

@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/jroelofs/calc.svg?branch=master)](https://travis-ci.org/jroelofs/calc)
+[![Coverage Status](https://coveralls.io/repos/github/jroelofs/calc/badge.svg)](https://coveralls.io/github/jroelofs/calc)
+
 ## Toy Calculator
 
 Simple toy calcualtor that parses a command-line provided string, and
