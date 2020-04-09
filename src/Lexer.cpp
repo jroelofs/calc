@@ -54,7 +54,7 @@ std::optional<Token> StreamLexer::next() {
     }
   }
 
-  const struct {
+  static constexpr struct {
     char C;
     Token::Kind Kind;
   } Matches[] = {
